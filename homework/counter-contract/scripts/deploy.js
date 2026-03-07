@@ -1,8 +1,8 @@
-const hre = require("hardhat");
+import hre from "hardhat";
 
 async function main() {
-    const Counter = await hre.ethers.getContractFactory("Counter");
-    const counter = await Counter.deploy();
+    const { ethers } = await hre.network.connect();
+    const counter = await ethers.deployContract("Counter", [0]);
 
     await counter.waitForDeployment();
 

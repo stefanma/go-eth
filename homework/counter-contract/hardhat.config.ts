@@ -1,28 +1,28 @@
 import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
-import { configVariable, defineConfig } from "hardhat/config";
+import { defineConfig, HardhatUserConfig } from "hardhat/config";
+import "dotenv/config";
 
-export default defineConfig({
+const config: HardhatUserConfig & {
+  etherscan?: { apiKey: string };
+  gasReporter?: {
+    enabled?: boolean;
+    currency?: string;
+  };
+} = {
   plugins: [hardhatToolboxMochaEthersPlugin],
   solidity: {
-    profiles: {
-      default: {
-        version: "0.8.28",
-      },
-      production: {
-        version: "0.8.28",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
-        },
+    version: "0.8.28",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
       },
     },
   },
   networks: {
-    hardhatMainnet: {
+    hardhat: {
       type: "edr-simulated",
-      chainType: "l1",
+      chainId: 31337,
     },
     hardhatOp: {
       type: "edr-simulated",
@@ -30,9 +30,18 @@ export default defineConfig({
     },
     sepolia: {
       type: "http",
-      chainType: "l1",
-      url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+      url: process.env.SEPOLIA_URL || "",
+      accounts: process.env.SEPOLIA_PRIVATE_KEY ? [process.env.SEPOLIA_PRIVATE_KEY] : [],
+      chainId: 11155111,
     },
   },
-});
+  gasReporter: {
+    enabled: process.env.REPORT_GAS === "true",
+    currency: "USD",
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY || "",
+  },
+};
+
+export default defineConfig(config);
