@@ -12,6 +12,10 @@
   "type": "module",
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.0.8",
+    "@nomicfoundation/hardhat-ignition-ethers": "^3.0.8",
     "hardhat": "^3.1.10"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1"
   }
 }
