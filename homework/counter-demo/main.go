@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/big"
 	"os"
+	"time"
 
 	"counter"
 
@@ -170,7 +171,11 @@ func main() {
 
 	// 等待交易确认
 	fmt.Println("等待交易确认...")
-	mineReceipt, err := bind.WaitMined(context.Background(), client, tx)
+
+	ctx, cancel = context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+	mineReceipt, err := bind.WaitMined(ctx, client, tx)
+
 	if err != nil {
 		log.Fatalf("等待交易确认失败: %v", err)
 	}
